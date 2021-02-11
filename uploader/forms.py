@@ -17,18 +17,16 @@ class UploadForm(forms.ModelForm):
         }
 
     def clean(self):
+        """валидация формы"""
+
+        cleaned_data = super().clean()
         new_url = self.cleaned_data['url']
         new_image = self.cleaned_data['image']
 
-        if new_url and new_image == None:
-            print('Указан только URL. Отлично!')
-            # return new_url
-        elif new_image and new_url == None:
-            print('Указан только IMAGE. Отлично!')
-            # return new_image
-        else:
-            print('Указаны оба поля. Плохо!')
-            # raise forms.ValidationError('Должно быть указано только одно поле.')
+        if new_url and new_image:
+            raise forms.ValidationError('Нужно заполнить только одно поле.')
+        elif not new_url and not new_image:
+            raise forms.ValidationError('Одно из полей должно быть заполненно.')
 
 
 class SizeForm(forms.Form):

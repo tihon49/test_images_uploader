@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 
 
-
 class MyFileModel(models.Model):
     """модель загружаемого файла"""
 
@@ -16,12 +15,6 @@ class MyFileModel(models.Model):
 
     def get_absolute_url(self):
         return reverse('image_detail', kwargs={'pk': self.pk})
-
-    def clean(self):
-        """убеждаемся что только одно из полей заполненно"""
-
-        if self.url and self.image:
-            raise ValidationError("Долножно быть указано что-то одно.")
 
     def __str__(self):
         return self.id

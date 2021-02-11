@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
-from django.contrib import messages
 
 from .forms import UploadForm, SizeForm
 from .models import MyFileModel
@@ -14,7 +13,7 @@ class BaseView(View):
     def get(self, request):
         images = MyFileModel.objects.all()
         template = 'uploader/home.html'
-        context = {'data': 'Какие-то данные'}
+        context = {}
 
         if images:
             context['objects_list'] = images
@@ -37,11 +36,9 @@ class AddImageView(View):
         bound_form = UploadForm(request.POST, request.FILES)
 
         if bound_form.is_valid():
-            print('Form is Valid')
             new_image = bound_form.save()
             return redirect(new_image)
 
-        messages.error(request, "Нужно указать только одно поле.")
         return render(request, 'uploader/add_image.html', context={'form': bound_form})
 
 

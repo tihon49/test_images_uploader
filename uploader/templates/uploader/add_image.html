@@ -11,25 +11,19 @@
         <div class="form-group">
             <form action="{% url 'add_image' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+                
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+                
                 {% for field in form %}
-                    {% if field.errors %}
-                        <div class="alert alert-danger">
-                            {{ field.errors }}
-                        </div>
-                    {% endif %}
                     {{ field.label }}
                     {{ field }}
                 {% endfor %}
                 <input type="submit" class="btn btn-secondary mt-3" value="Отправить">
-<!--                <button class="btn btn-secondary" type="button" id="inputGroupFileAddon04">Отправить</button>-->
             </form>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-danger mt-3">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
         </div>
     </div>
 </div>
