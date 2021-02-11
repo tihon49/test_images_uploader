@@ -1,7 +1,7 @@
 from django import forms
 from django.db.models import Q
 
-from .models import MyFileModel
+from .models import MyFileModel, ResizedModel
 
 
 class UploadForm(forms.ModelForm):
@@ -41,14 +41,19 @@ class SizeForm(forms.Form):
                              widget=forms.TextInput(attrs={'class': 'form-control'}),
                              label='Высота')
 
-    def clean_width(self):
-        new_width = self.cleaned_data['width']
-        return new_width
-
-    def clean_height(self):
-        new_height = self.cleaned_data['height']
-        return new_height
-
     def save(self):
         return {'width': self.cleaned_data['width'],
                 'height': self.cleaned_data['height']}
+
+
+class SizeForm2(forms.ModelForm):
+    """изменение размера изображения"""
+
+    class Meta:
+        model = ResizedModel
+        fields = ('width', 'height')
+
+        widgets = {
+            'width': forms.NumberInput(attrs={'class': 'form-control'}),
+            'height': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

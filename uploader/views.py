@@ -3,8 +3,8 @@ from django.views import View
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
 
-from .forms import UploadForm, SizeForm
-from .models import MyFileModel
+from .forms import UploadForm, SizeForm, SizeForm2
+from .models import MyFileModel, ResizedModel
 
 
 class BaseView(View):
@@ -48,7 +48,7 @@ class ImageDetailView(View):
     def get(self, request, pk):
         object_ = MyFileModel.objects.get(pk=pk)
         template = 'uploader/image_detail.html'
-        form = SizeForm()
+        form = SizeForm2()
         context = {'object': object_, 'form': form}
 
         return render(request, template, context)
@@ -57,13 +57,13 @@ class ImageDetailView(View):
         """загрузка изображения"""
 
         object_ = MyFileModel.objects.get(pk=pk)
-        bound_form = SizeForm(request.POST)
+        # создаем новую или берем имеющуюся модель с измененными разменрами
+        new_object, _ = ResizedModel.objects.get_or_create(original_image=object_)
+        bound_form = SizeForm2(request.POST, instance=new_object)
 
         if bound_form.is_valid():
-            data = bound_form.save()
-
-            return render(request, 'uploader/image_resized.html', context={'data': data,
-                                                                           'object': object_,
+            resized_image = bound_form.save()
+            return render(request, 'uploader/image_resized.html', context={'object': resized_image,
                                                                            'form': bound_form})
 
         return render(request, 'uploader/image_detail.html', context={'object': object_,
