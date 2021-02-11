@@ -29,24 +29,7 @@ class UploadForm(forms.ModelForm):
             raise forms.ValidationError('Одно из полей должно быть заполненно.')
 
 
-class SizeForm(forms.Form):
-    """изменение размера изображения"""
-
-    width = forms.CharField(max_length=1000,
-                            required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}),
-                            label='Ширина')
-    height = forms.CharField(max_length=1000,
-                             required=False,
-                             widget=forms.TextInput(attrs={'class': 'form-control'}),
-                             label='Высота')
-
-    def save(self):
-        return {'width': self.cleaned_data['width'],
-                'height': self.cleaned_data['height']}
-
-
-class SizeForm2(forms.ModelForm):
+class SizeForm(forms.ModelForm):
     """изменение размера изображения"""
 
     class Meta:
