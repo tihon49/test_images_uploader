@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
+from django.contrib import messages
 
 from .forms import UploadForm, SizeForm
 from .models import MyFileModel
@@ -36,10 +37,12 @@ class AddImageView(View):
         bound_form = UploadForm(request.POST, request.FILES)
 
         if bound_form.is_valid():
+            print('Form is Valid')
             new_image = bound_form.save()
             return redirect(new_image)
 
-        return render(request, template, context={'form': bound_form})
+        messages.error(request, "Нужно указать только одно поле.")
+        return render(request, 'uploader/add_image.html', context={'form': bound_form})
 
 
 class ImageDetailView(View):
@@ -54,24 +57,17 @@ class ImageDetailView(View):
         return render(request, template, context)
 
     def post(self, request, pk):
-        # TODO: реализовать изменение размеров изображения
+        """загрузка изображения"""
+
         object_ = MyFileModel.objects.get(pk=pk)
         bound_form = SizeForm(request.POST)
 
         if bound_form.is_valid():
-            print('Form is valid!')
             data = bound_form.save()
 
             return render(request, 'uploader/image_resized.html', context={'data': data,
                                                                            'object': object_,
                                                                            'form': bound_form})
 
-        return render(request, 'uploader/image_detail.html', {'object': object_})
-
-
-# class ImageResizeView(View):
-#     def get(self, request):
-#         template = 'uploader/image_resized.html'
-#         form = SizeForm()
-#
-#         return render()
+        return render(request, 'uploader/image_detail.html', context={'object': object_,
+                                                                      'form': bound_form})

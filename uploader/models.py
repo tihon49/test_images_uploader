@@ -24,4 +24,4 @@ class MyFileModel(models.Model):
             raise ValidationError("Долножно быть указано что-то одно.")
 
     def __str__(self):
-        return self.url
+        return self.id

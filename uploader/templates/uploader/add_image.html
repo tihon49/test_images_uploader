@@ -23,6 +23,13 @@
                 <input type="submit" class="btn btn-secondary mt-3" value="Отправить">
 <!--                <button class="btn btn-secondary" type="button" id="inputGroupFileAddon04">Отправить</button>-->
             </form>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger mt-3">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>
